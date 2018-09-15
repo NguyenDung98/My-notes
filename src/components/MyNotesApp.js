@@ -12,14 +12,15 @@ export default class MyNotesApp extends React.Component {
                 date: (new Date()).toLocaleDateString(),
                 notes: []
             }]
-        }
+        };
         this.handleAddNewNote = this.handleAddNewNote.bind(this);
         this.handleUpdateNote = this.handleUpdateNote.bind(this);
+        this.handleRemoveNote = this.handleRemoveNote.bind(this);
     }
     handleAddNewNote(newNote) {
-        const today = (new Date()).toLocaleDateString();
-        const allDaysNotes = this.state.dailyNotes.length;
-        if (today === this.state.dailyNotes[allDaysNotes - 1].date) {
+        const today = (new Date()).toLocaleDateString(); // thời gian ngày hôm nay
+        const allDaysNotes = this.state.dailyNotes.length; // note của tất cả các ngày
+        if (today === this.state.dailyNotes[allDaysNotes - 1].date) { // chỉ được phép tạo note mới trong ngày hôm nay
             let todayNotes = this.state.dailyNotes[allDaysNotes - 1].notes;
             if (todayNotes.findIndex(note => note.title === newNote.title) === -1) {
                 this.setState(() => {
@@ -28,7 +29,7 @@ export default class MyNotesApp extends React.Component {
                 })
             }
         }
-        else {
+        else { // khi hôm nay chưa có note nào
             this.setState(() => {
                 this.state.dailyNotes.push({
                     date: today,
@@ -38,28 +39,50 @@ export default class MyNotesApp extends React.Component {
         }
     }
     handleUpdateNote(updateNote) {
-        const content = updateNote.content;
-        const title = updateNote.title;
-        const dayIndex = this.state.dailyNotes.findIndex(dailyNote => dailyNote.date === updateNote.date);
-        if (this.state.dailyNotes[dayIndex].notes.findIndex(note => note.title === updateNote.title) === -1 ||
-            title == updateNote.oldNote.title) {
-            const noteIndex = this.state.dailyNotes[dayIndex].notes.findIndex(note => note.title == updateNote.oldNote.title);
+        const content = updateNote.content; // nội dung mới
+        const title = updateNote.title; // tiêu đề mới
+        const { noteIndex, dayIndex } = this.findNote(updateNote.date, title); // chỉ số note, ngày của note
+        if (noteIndex === -1 ||
+            title === updateNote.oldNote.title) { // tiêu đề note mới không được phép trùng note cũ trong ngày
+            const { noteIndex:oldNoteIndex } = this.findNote(updateNote.date, updateNote.oldNote.title);
             this.setState(() => {
-                this.state.dailyNotes[dayIndex].notes[noteIndex] = { title, content }
+                this.state.dailyNotes[dayIndex].notes[oldNoteIndex] = { title, content };
                 return this.state;
             })
         }
     }
+    handleRemoveNote(note) {
+        const { noteIndex, dayIndex } = this.findNote(note.date, note.title);
+        this.setState(() => {
+            this.state.dailyNotes[dayIndex].notes.splice(noteIndex, 1);
+            return this.state;
+        })
+    }
+    findNote(date, title) {
+        const dayIndex = this.findDayIndex(date); // chỉ số ngày của note
+        return {
+            noteIndex: this.state.dailyNotes[dayIndex].notes.findIndex(note => note.title === title),
+            dayIndex: dayIndex
+        }
+    }
+    findDayIndex(date) {
+        return this.state.dailyNotes.findIndex(dailyNote => dailyNote.date === date);
+    }
     render() {
         return (
-            <div>
+            <div className="app">
                 <Header />
-                <AddNote handleAddNewNote={this.handleAddNewNote} />
-                <Notes 
-                    notes={this.state.dailyNotes}
-                    updateNote={this.handleUpdateNote}     
-                />
-                <TakeNote />
+                <div className="">
+                    <div className="container">
+                        <AddNote handleAddNewNote={this.handleAddNewNote} />
+                        <Notes 
+                            notes={this.state.dailyNotes}
+                            updateNote={this.handleUpdateNote}
+                            removeNote={this.handleRemoveNote}
+                        />
+                        <TakeNote />
+                    </div>
+                </div>
             </div>
         )
     }

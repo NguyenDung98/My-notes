@@ -7,7 +7,7 @@ export default class Notes extends React.Component {
         super(props);
         this.state = {
             onDetails: [this.props.notes.map(() => true)] 
-        }
+        };
         this.onToggleDetail = this.onToggleDetail.bind(this);
     }
     onToggleDetail(date) {
@@ -16,7 +16,7 @@ export default class Notes extends React.Component {
         this.setState(() => { 
             this.state.onDetails[index] = !currentState;
             return this.state;
-        })
+        });
         return !currentState;
     }
     render() {
@@ -32,6 +32,7 @@ export default class Notes extends React.Component {
                         title={note.title}
                         content={note.content}
                         updateNote={this.props.updateNote}
+                        removeNote={this.props.removeNote}
                     />
                 ));
                 allNotes.push((
@@ -47,8 +48,9 @@ export default class Notes extends React.Component {
             }
         }
         return (
-            <div>
-                {allNotes}
+            <div className="widget">
+                <h3 className="widget__header">Your Notes</h3>
+                {allNotes.length ? allNotes : <p className="widget__message">Let's add new note to begin!</p>}
             </div>
         )    
     }

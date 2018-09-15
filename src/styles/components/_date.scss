@@ -1,0 +1,12 @@
+.date {
+  margin: $s-size;
+  margin-bottom: 0;
+  padding-bottom: $s-size;
+}
+
+.date__time {
+  color: $dark-orange;
+  display: inline;
+  font-weight: bold;
+  font-size: $m-size * 1.5;
+}

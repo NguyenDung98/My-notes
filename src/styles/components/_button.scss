@@ -1,0 +1,33 @@
+.big-button {
+    background: $green;
+    border: none;
+    border-bottom: .6rem solid darken($color: $green, $amount: 10%);
+    color: white;
+    display: block;
+    font-size: $l-size;
+    font-weight: bold;
+    margin: $s-size auto;
+    padding: $l-size;
+    width: 80%;
+}
+
+.button {
+    color: white;
+    background: $green;
+    border: none;
+    border-bottom: .3rem solid darken($green, 10%);
+    padding: $s-size $m-size;
+}
+
+.button--detail, .button--link {
+    background: none;
+    border: none;
+    color: $off-white;
+    margin-left: $s-size;
+    padding: 0;
+}
+
+.button--link {
+    float: right;
+    margin-right: $s-size;
+}
