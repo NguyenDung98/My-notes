@@ -1,21 +1,16 @@
 import React from 'react';
 
 export default class Note extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            onUpdate: false
-        };
-        this.onChangeUpdateState = this.onChangeUpdateState.bind(this);
-        this.onUpdateNote = this.onUpdateNote.bind(this);
-        this.onRemoveNote = this.onRemoveNote.bind(this);
-    }
-    onChangeUpdateState() {
+    state = {
+        onUpdate: false,
+        classList: "note"
+    };
+    onChangeUpdateState = () => {
         this.setState(() => ({
             onUpdate: !this.state.onUpdate
         }))
-    }
-    onUpdateNote(event) {
+    };
+    onUpdateNote = event => {
         event.preventDefault();
         const title = event.target.elements.title.value;
         const content = event.target.elements.content.value;
@@ -28,16 +23,16 @@ export default class Note extends React.Component {
             title, content
         });
         this.onChangeUpdateState();
-    }
-    onRemoveNote() {
+    };
+    onRemoveNote = () => {
         this.props.removeNote({
             date: this.props.date,
             title: this.props.title
         })
-    }
+    };
     render() {
         return (
-            <div className="note">
+            <div className={this.state.classList}>
                 <h4 className="note__title">{this.props.title}</h4>
                 {!this.state.onUpdate &&
                 <button

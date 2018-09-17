@@ -16,3 +16,8 @@
 .form__content {
     resize: none;
 }
+
+.form__error {
+    color: $off-white;
+    font-style: italic;
+}

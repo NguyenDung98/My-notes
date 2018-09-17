@@ -5,20 +5,32 @@ import Notes from './Notes';
 import TakeNote from './TakeNote';
 
 export default class MyNotesApp extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            dailyNotes: [{
-                date: (new Date()).toLocaleDateString(),
-                notes: []
-            }]
-        };
-        this.handleAddNewNote = this.handleAddNewNote.bind(this);
-        this.handleUpdateNote = this.handleUpdateNote.bind(this);
-        this.handleRemoveNote = this.handleRemoveNote.bind(this);
+    state = {
+        dailyNotes: [{
+            date: (new Date()).toLocaleDateString(),
+            notes: []
+        }]
+    };
+    componentDidMount() {
+        let data = JSON.parse(localStorage.getItem('noteData'));
+        if (data) {
+            this.setState(() => ({
+                dailyNotes: data
+            }))
+        }
     }
-    handleAddNewNote(newNote) {
+    componentDidUpdate() {
+        let data = JSON.stringify(this.state.dailyNotes);
+        localStorage.setItem('noteData', data);
+    }
+
+    handleAddNewNote = newNote => {
         const today = (new Date()).toLocaleDateString(); // thời gian ngày hôm nay
+        if (!newNote.title) {
+            return "Enter valid title to add item"
+        } else if (this.findNote(today, newNote.title).noteIndex > -1) {
+            return "You shouldn't add a title twice in a day!"
+        }
         const allDaysNotes = this.state.dailyNotes.length; // note của tất cả các ngày
         if (today === this.state.dailyNotes[allDaysNotes - 1].date) { // chỉ được phép tạo note mới trong ngày hôm nay
             let todayNotes = this.state.dailyNotes[allDaysNotes - 1].notes;
@@ -37,8 +49,8 @@ export default class MyNotesApp extends React.Component {
                 })
             })
         }
-    }
-    handleUpdateNote(updateNote) {
+    };
+    handleUpdateNote = updateNote => {
         const content = updateNote.content; // nội dung mới
         const title = updateNote.title; // tiêu đề mới
         const { noteIndex, dayIndex } = this.findNote(updateNote.date, title); // chỉ số note, ngày của note
@@ -50,13 +62,16 @@ export default class MyNotesApp extends React.Component {
                 return this.state;
             })
         }
-    }
-    handleRemoveNote(note) {
+    };
+    handleRemoveNote = note => {
         const { noteIndex, dayIndex } = this.findNote(note.date, note.title);
         this.setState(() => {
             this.state.dailyNotes[dayIndex].notes.splice(noteIndex, 1);
             return this.state;
         })
+    };
+    handleRandomNote(dayIndex, noteIndex) {
+        //
     }
     findNote(date, title) {
         const dayIndex = this.findDayIndex(date); // chỉ số ngày của note
@@ -72,7 +87,7 @@ export default class MyNotesApp extends React.Component {
         return (
             <div className="app">
                 <Header />
-                <div className="">
+                <div>
                     <div className="container">
                         <AddNote handleAddNewNote={this.handleAddNewNote} />
                         <Notes 
@@ -80,7 +95,7 @@ export default class MyNotesApp extends React.Component {
                             updateNote={this.handleUpdateNote}
                             removeNote={this.handleRemoveNote}
                         />
-                        <TakeNote />
+                        {/*<TakeNote />*/}
                     </div>
                 </div>
             </div>

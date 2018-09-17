@@ -1,27 +1,25 @@
 import React from 'react';
 
 export default class AddNote extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            inputOn: false
-            // error state
-        };
-        this.onAddNoteClick = this.onAddNoteClick.bind(this);
-        this.onAddNewNote = this.onAddNewNote.bind(this);
-    }
-    onAddNoteClick() {
+    state = {
+        inputOn: false,
+        error: undefined
+    };
+    onAddNoteClick = () => {
         this.setState(() => ({
             inputOn: !this.state.inputOn
         }))
-    }
-    onAddNewNote(event) {
+    };
+    onAddNewNote = event => {
         event.preventDefault();
         const title = event.target.elements.title.value;
         const content = event.target.elements.content.value;
-        this.props.handleAddNewNote({ title, content });
-        this.onAddNoteClick();
-    }
+        this.setState(() =>  {
+            const error = this.props.handleAddNewNote({ title, content });
+            if (!error) this.onAddNoteClick();
+            return { error }
+        });
+    };
     render() {
         return (
             <div>
@@ -48,6 +46,7 @@ export default class AddNote extends React.Component {
                             name="content"
                             placeholder="Content goes here!"
                         />
+                        {this.state.error && <p className="form__error">{this.state.error}</p>}
                         <button className="button">Add note</button>
                     </form>
                 )}

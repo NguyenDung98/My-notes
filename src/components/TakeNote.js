@@ -1,9 +1,19 @@
 import React from 'react';
 
-export default function TakeNote() {
-    return (
-        <div className="">
-            <button className="big-button">Random A Note To Review</button>
-        </div>
-    )
+export default class TakeNote extends React.Component{
+    onTakeNote() {
+        alert("Hello")
+    }
+    render() {
+        return (
+            <div>
+                <button
+                    className="big-button"
+                    onClick={this.onTakeNote}
+                >
+                    Random A Note To Review
+                </button>
+            </div>
+        )
+    }
 }
