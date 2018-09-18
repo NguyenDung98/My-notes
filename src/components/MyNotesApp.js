@@ -26,12 +26,12 @@ export default class MyNotesApp extends React.Component {
 
     handleAddNewNote = newNote => {
         const today = (new Date()).toLocaleDateString(); // thời gian ngày hôm nay
+        const allDaysNotes = this.state.dailyNotes.length; // số lượng note của tất cả các ngày
         if (!newNote.title) {
             return "Enter valid title to add item"
-        } else if (this.findNote(today, newNote.title).noteIndex > -1) {
+        } else if (this.state.dailyNotes[allDaysNotes - 1].date ===  today && this.findNote(today, newNote.title).noteIndex > -1) {
             return "You shouldn't add a title twice in a day!"
         }
-        const allDaysNotes = this.state.dailyNotes.length; // note của tất cả các ngày
         if (today === this.state.dailyNotes[allDaysNotes - 1].date) { // chỉ được phép tạo note mới trong ngày hôm nay
             let todayNotes = this.state.dailyNotes[allDaysNotes - 1].notes;
             if (todayNotes.findIndex(note => note.title === newNote.title) === -1) {
@@ -46,7 +46,8 @@ export default class MyNotesApp extends React.Component {
                 this.state.dailyNotes.push({
                     date: today,
                     notes: [newNote]
-                })
+                });
+                return this.state;
             })
         }
     };

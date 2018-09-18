@@ -32,7 +32,10 @@ export default class Notes extends React.Component {
                     />
                 ));
                 allNotes.push((
-                    <div key={date} >
+                    <div
+                        className="widget__notes"
+                        key={date}
+                    >
                         <NoteDate 
                             date={date} 
                             onToggleDetail={this.onToggleDetail}
